@@ -107,7 +107,9 @@ class _PostState extends State<Post> {
         children: <Widget>[
           Center(
             child: Container(
-               height: 180,
+               height: 180, /* for carson: if you're doing the demo from your phone again and the caution tape thing displays
+               when you pull up the keyboard to type a caption, just tweak this number until the caution tape dissapears. (it has something
+               to do with the pixels, that's all)*/
                width: MediaQuery.of(context).size.width * 0.9,
                child: ClipRRect(
                  borderRadius: BorderRadius.circular(5),
