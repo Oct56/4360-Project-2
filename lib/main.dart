@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:group7_artfolio/screens/chat_list.dart';
 import 'package:group7_artfolio/screens/login.dart';
 import 'package:group7_artfolio/screens/signup.dart';
-import 'package:group7_artfolio/screens/profile.dart'; 
+import 'package:group7_artfolio/screens/profile.dart';
 import 'package:group7_artfolio/screens/post_image.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +60,18 @@ class HomePage extends StatelessWidget {
 
   int _selectedIndex = 0; // navigation bar icon page index
 
+  void _sendEmail(){ //nearly works
+   final Uri emailLaunchUri = Uri(
+     scheme: 'mailto',
+     path: 'email@email.com', //need to parse posters email
+     queryParameters: {
+      'subject': 'I saw your art on Artfolio...',
+      'body': 'I would like to bid'
+     },
+    );
+   launchUrl(emailLaunchUri);
+}
+
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       //home
@@ -79,7 +94,8 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  CollectionReference postsReference = FirebaseFirestore.instance.collection('posts');
+  CollectionReference postsReference =
+      FirebaseFirestore.instance.collection('posts');
   late Stream<QuerySnapshot> stream;
 
   @override
@@ -113,15 +129,51 @@ class HomePage extends StatelessWidget {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 Map thisItem = items[index];
-                return ListTile(
-                  title: Text('${thisItem['username']}'),
-                  subtitle: Text('${thisItem['caption']}'),
-                  leading: Container(
-                    height: 80,
-                    width: 80,
-                    child: thisItem.containsKey('imageURL') 
-                      ? Image.network('${thisItem['imageURL']}') 
-                      : Container(),
+                String? username = thisItem['username'];
+                String? caption = thisItem['caption'];
+                String? imageURL = thisItem['imageURL'];
+
+                if (username == null) {
+                  return ListTile(
+                    title: Text('Missing User Info'),
+                  );
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (imageURL != null)
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            width: double.infinity,
+                            child: Image.network(imageURL, fit: BoxFit.cover),
+                          ),
+                        ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        children: [
+                          IconButton(
+                           icon: Icon(Icons.mail_outline, size: 20,),
+                           onPressed: () {
+                            _sendEmail(); //nearly works
+                            }, ),
+                          SizedBox(width: 4.0),
+                          Text(
+                            username,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4.0),
+                      Text(caption ?? 'No caption'),
+                      Divider(),
+                    ],
                   ),
                 );
               },
@@ -147,7 +199,6 @@ class HomePage extends StatelessWidget {
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
-          
           // add more sections to nav bar here
         ],
       ),
