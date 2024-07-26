@@ -6,6 +6,7 @@ import 'package:group7_artfolio/screens/login.dart';
 import 'package:group7_artfolio/screens/signup.dart';
 import 'package:group7_artfolio/screens/profile.dart'; 
 import 'package:group7_artfolio/screens/post_image.dart';
+import 'package:group7_artfolio/components/post_display.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,17 +47,27 @@ class AuthenticationWrapper extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key) {
     stream = postsReference.snapshots();
   }
 
+  CollectionReference postsReference = FirebaseFirestore.instance.collection('posts');
+  late Stream<QuerySnapshot> stream;
+
+  
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   Future<void> signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
   }
 
-  int _selectedIndex = 0; // navigation bar icon page index
-
+  int _selectedIndex = 0; 
+ // navigation bar icon page index
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       //home
@@ -78,9 +89,8 @@ class HomePage extends StatelessWidget {
       // more cases can be added for more sections
     }
   }
-
-  CollectionReference postsReference = FirebaseFirestore.instance.collection('posts');
-  late Stream<QuerySnapshot> stream;
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +105,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: stream,
+        stream: widget.stream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('An error has occurred'));
@@ -113,7 +123,13 @@ class HomePage extends StatelessWidget {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 Map thisItem = items[index];
-                return ListTile(
+                return PostDisplay(caption: thisItem['caption'], 
+                user: thisItem['username'], 
+                imageURL: thisItem['imageURL'],
+                likes: List<String>.from(thisItem['likes'] ?? []),
+                postId: thisItem['id'],
+                );
+                /*return ListTile(
                   title: Text('${thisItem['username']}'),
                   subtitle: Text('${thisItem['caption']}'),
                   leading: Container(
@@ -123,7 +139,7 @@ class HomePage extends StatelessWidget {
                       ? Image.network('${thisItem['imageURL']}') 
                       : Container(),
                   ),
-                );
+                );*/
               },
             );
           } else {
@@ -140,7 +156,7 @@ class HomePage extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.plus_one_rounded),
+            icon: Icon(Icons.add),
             label: 'Post',
           ),
           BottomNavigationBarItem(

@@ -3,15 +3,17 @@ class NewPost{
   String username;
   String caption;
   String imageURL;
+  List<String> likes;
 
-  NewPost({required this.id, required this.username, required this.caption, required this.imageURL});
+  NewPost({required this.id, required this.username, required this.caption, required this.imageURL, required this.likes});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'username': username,
       'caption': caption,
-      'imageURL': imageURL
+      'imageURL': imageURL,
+      'likes': likes
     };
   }
 
@@ -20,7 +22,8 @@ class NewPost{
       id: map['id'],
       username: map['username'],
       caption: map['caption'],
-      imageURL: map['imageURL']
+      imageURL: map['imageURL'],
+      likes: List<String>.from(map['likes'])
     );
   }
 }
