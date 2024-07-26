@@ -7,6 +7,7 @@ import 'package:group7_artfolio/screens/signup.dart';
 import 'package:group7_artfolio/screens/profile.dart';
 import 'package:group7_artfolio/screens/post_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:group7_artfolio/components/post_display.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,30 +65,35 @@ class HomePage extends StatelessWidget {
       print('User ID is null, cannot send email.');
       return;
     }
-    
+
     //String? email = await getEmailOfPoster(userId);
 
-    if (userEmail != null) {
+if (userEmail != null) {
       final Uri emailLaunchUri = Uri(
         scheme: 'mailto',
         path: userEmail,
-        queryParameters: {
-          'subject': 'I saw your art on Artfolio...',
-          'body': 'I would like to bid'
-        },
+         query: _encodeQueryParameters(<String, String>{
+        'subject': 'I saw your art on Artfolio...',
+        'body': 'I would like to bid'
+      }),
       );
       launchUrl(emailLaunchUri);
     }
   }
 
+  String _encodeQueryParameters(Map<String, String> params) {
+  return params.entries.map((MapEntry<String, String> e) =>
+    '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+}
+
   //Future<String?> getEmailOfPoster(String userId) async {
-    //DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    //if (userSnapshot.exists) {
-     // Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-     // return userData['email'];
-    //}
-    //return null;
- // }
+  //DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  //if (userSnapshot.exists) {
+  // Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+  // return userData['email'];
+  //}
+  //return null;
+  // }
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
@@ -111,7 +117,8 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  CollectionReference postsReference = FirebaseFirestore.instance.collection('posts');
+  CollectionReference postsReference =
+      FirebaseFirestore.instance.collection('posts');
   late Stream<QuerySnapshot> stream;
 
   @override
@@ -148,7 +155,8 @@ class HomePage extends StatelessWidget {
                 String? username = thisItem['username'];
                 String? caption = thisItem['caption'];
                 String? imageURL = thisItem['imageURL'];
-                String? userEmail = thisItem['userEmail']; // Ensure this is being retrieved correctly
+                String? userEmail = thisItem[
+                    'userEmail']; // Ensure this is being retrieved correctly
 
                 if (username == null) {
                   return ListTile(
@@ -173,10 +181,15 @@ class HomePage extends StatelessWidget {
                       Row(
                         children: [
                           IconButton(
-                           icon: Icon(Icons.mail_outline, size: 20,),
-                           onPressed: () {
-                            _sendEmail(userEmail); // Ensure userId is not null
-                            }, ),
+                            icon: Icon(
+                              Icons.mail_outline,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              _sendEmail(
+                                  userEmail); // Ensure userId is not null
+                            },
+                          ),
                           SizedBox(width: 4.0),
                           Text(
                             username,
@@ -185,10 +198,18 @@ class HomePage extends StatelessWidget {
                               fontSize: 16.0,
                             ),
                           ),
+                          
                         ],
                       ),
                       SizedBox(height: 4.0),
                       Text(caption ?? 'No caption'),
+                      PostDisplay(
+                            caption: thisItem['caption'],
+                            user: thisItem['username'],
+                            imageURL: thisItem['imageURL'],
+                            likes: List<String>.from(thisItem['likes'] ?? []),
+                            postId: thisItem['id'],
+                          ),
                       Divider(),
                     ],
                   ),
@@ -209,7 +230,7 @@ class HomePage extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.plus_one_rounded),
+            icon: Icon(Icons.add),
             label: 'Post',
           ),
           BottomNavigationBarItem(

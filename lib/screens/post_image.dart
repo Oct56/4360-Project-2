@@ -17,8 +17,10 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  final CollectionReference databaseRef2 = FirebaseFirestore.instance.collection('users');
-  final CollectionReference databaseRef = FirebaseFirestore.instance.collection('posts');
+  final CollectionReference databaseRef2 =
+      FirebaseFirestore.instance.collection('users');
+  final CollectionReference databaseRef =
+      FirebaseFirestore.instance.collection('posts');
   final currentUser = FirebaseAuth.instance.currentUser!;
   TextEditingController writeDescription = TextEditingController();
   File? file;
@@ -203,43 +205,51 @@ class _PostState extends State<Post> {
   }
 
   Future<void> create_post() async {
-  if (file == null) return;
+    if (file == null) return;
 
-  Reference referenceRoot = FirebaseStorage.instance.ref();
-  String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-  Reference referenceDirImages = referenceRoot.child('images');
-  Reference referenceToUpload = referenceDirImages.child(fileName);
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference referenceDirImages = referenceRoot.child('images');
+    Reference referenceToUpload = referenceDirImages.child(fileName);
 
-  // Upload the file and wait until it's done
-  UploadTask uploadTask = referenceToUpload.putFile(File(file!.path));
+    // Upload the file and wait until it's done
+    UploadTask uploadTask = referenceToUpload.putFile(File(file!.path));
 
-  // Wait for the upload task to complete
-  TaskSnapshot snapshot = await uploadTask.whenComplete(() {});
+    // Wait for the upload task to complete
+    TaskSnapshot snapshot = await uploadTask.whenComplete(() {});
 
-  // Get the download URL
-  String imageURL = await snapshot.ref.getDownloadURL();
-  DocumentSnapshot snapshot2 = await databaseRef2.doc(currentUser.uid).get();
-  var value;
-  if (snapshot2.exists) {
-    Map<String, dynamic>? data = snapshot2.data() as Map<String, dynamic>?;
-    value = data?['username'];
-    setState(() {});
+    // Get the download URL
+    String imageURL = await snapshot.ref.getDownloadURL();
+    DocumentSnapshot snapshot2 = await databaseRef2.doc(currentUser.uid).get();
+    var value;
+    if (snapshot2.exists) {
+      Map<String, dynamic>? data = snapshot2.data() as Map<String, dynamic>?;
+      value = data?['username'];
+      setState(() {});
+    }
+
+    final post = NewPost(
+      id: databaseRef.doc().id,
+      userEmail: currentUser.email!, // Ensure userId is added here
+      username: value,
+      caption: writeDescription.text,
+      imageURL: imageURL,
+      likes: []
+    );
+
+    await databaseRef.doc(post.id).set(post.toMap());
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
   }
 
-  final post = NewPost(
-    id: databaseRef.doc().id,
-    userEmail: currentUser.email!, // Ensure userId is added here
-    username: value,
-    caption: writeDescription.text,
-    imageURL: imageURL,
-  );
-
-  await databaseRef.doc(post.id).set(post.toMap());
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => HomePage()),
-  );
-}
+  void goHome() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

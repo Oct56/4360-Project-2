@@ -4,6 +4,7 @@ class NewPost {
   String username;
   String caption;
   String imageURL;
+  List<String> likes;
 
   NewPost({
     required this.id,
@@ -11,6 +12,7 @@ class NewPost {
     required this.username,
     required this.caption,
     required this.imageURL,
+    required this.likes
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class NewPost {
       'username': username,
       'caption': caption,
       'imageURL': imageURL,
+      'likes': likes
     };
   }
 
@@ -30,6 +33,7 @@ class NewPost {
       username: map['username'],
       caption: map['caption'],
       imageURL: map['imageURL'],
+      likes: List<String>.from(map['likes'])
     );
   }
 }
