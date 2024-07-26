@@ -1,13 +1,13 @@
 class NewPost {
   String id;
-  String userId;
+  String userEmail;
   String username;
   String caption;
   String imageURL;
 
   NewPost({
     required this.id,
-    required this.userId,
+    required this.userEmail,
     required this.username,
     required this.caption,
     required this.imageURL,
@@ -16,7 +16,7 @@ class NewPost {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'userId': userId,
+      'userEmail': userEmail,
       'username': username,
       'caption': caption,
       'imageURL': imageURL,
@@ -26,7 +26,7 @@ class NewPost {
   factory NewPost.fromMap(Map<String, dynamic> map) {
     return NewPost(
       id: map['id'],
-      userId: map['userId'],
+      userEmail: map['userEmail'],
       username: map['username'],
       caption: map['caption'],
       imageURL: map['imageURL'],

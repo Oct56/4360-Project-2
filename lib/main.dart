@@ -58,18 +58,19 @@ class HomePage extends StatelessWidget {
 
   int _selectedIndex = 0; // navigation bar icon page index
 
-  Future<void> _sendEmail(String? userId) async {
-    if (userId == null) {
+  Future<void> _sendEmail(String? userEmail) async {
+    if (userEmail == null) {
       // Handle the case where userId is null
       print('User ID is null, cannot send email.');
       return;
     }
     
-    String? email = await getEmailOfPoster(userId);
-    if (email != null) {
+    //String? email = await getEmailOfPoster(userId);
+
+    if (userEmail != null) {
       final Uri emailLaunchUri = Uri(
         scheme: 'mailto',
-        path: email,
+        path: userEmail,
         queryParameters: {
           'subject': 'I saw your art on Artfolio...',
           'body': 'I would like to bid'
@@ -79,14 +80,14 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  Future<String?> getEmailOfPoster(String userId) async {
-    DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    if (userSnapshot.exists) {
-      Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-      return userData['email'];
-    }
-    return null;
-  }
+  //Future<String?> getEmailOfPoster(String userId) async {
+    //DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    //if (userSnapshot.exists) {
+     // Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+     // return userData['email'];
+    //}
+    //return null;
+ // }
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
@@ -147,7 +148,7 @@ class HomePage extends StatelessWidget {
                 String? username = thisItem['username'];
                 String? caption = thisItem['caption'];
                 String? imageURL = thisItem['imageURL'];
-                String? userId = thisItem['userId']; // Ensure this is being retrieved correctly
+                String? userEmail = thisItem['userEmail']; // Ensure this is being retrieved correctly
 
                 if (username == null) {
                   return ListTile(
@@ -174,7 +175,7 @@ class HomePage extends StatelessWidget {
                           IconButton(
                            icon: Icon(Icons.mail_outline, size: 20,),
                            onPressed: () {
-                            _sendEmail(userId); // Ensure userId is not null
+                            _sendEmail(userEmail); // Ensure userId is not null
                             }, ),
                           SizedBox(width: 4.0),
                           Text(

@@ -228,7 +228,7 @@ class _PostState extends State<Post> {
 
   final post = NewPost(
     id: databaseRef.doc().id,
-    userId: currentUser.uid, // Ensure userId is added here
+    userEmail: currentUser.email!, // Ensure userId is added here
     username: value,
     caption: writeDescription.text,
     imageURL: imageURL,
