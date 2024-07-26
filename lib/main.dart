@@ -71,14 +71,19 @@ class HomePage extends StatelessWidget {
       final Uri emailLaunchUri = Uri(
         scheme: 'mailto',
         path: userEmail,
-        queryParameters: {
-          'subject': 'I saw your art on Artfolio...',
-          'body': 'I would like to bid'
-        },
+         query: _encodeQueryParameters(<String, String>{
+        'subject': 'I saw your art on Artfolio...',
+        'body': 'I would like to bid'
+      }),
       );
       launchUrl(emailLaunchUri);
     }
   }
+
+  String _encodeQueryParameters(Map<String, String> params) {
+  return params.entries.map((MapEntry<String, String> e) =>
+    '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
+}
 
   //Future<String?> getEmailOfPoster(String userId) async {
     //DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
