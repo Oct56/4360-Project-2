@@ -2,13 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:group7_artfolio/screens/chat_list.dart';
 import 'package:group7_artfolio/screens/login.dart';
 import 'package:group7_artfolio/screens/signup.dart';
 import 'package:group7_artfolio/screens/profile.dart';
 import 'package:group7_artfolio/screens/post_image.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,17 +58,35 @@ class HomePage extends StatelessWidget {
 
   int _selectedIndex = 0; // navigation bar icon page index
 
-  void _sendEmail(){ //nearly works
-   final Uri emailLaunchUri = Uri(
-     scheme: 'mailto',
-     path: 'email@email.com', //need to parse posters email
-     queryParameters: {
-      'subject': 'I saw your art on Artfolio...',
-      'body': 'I would like to bid'
-     },
-    );
-   launchUrl(emailLaunchUri);
-}
+  Future<void> _sendEmail(String? userId) async {
+    if (userId == null) {
+      // Handle the case where userId is null
+      print('User ID is null, cannot send email.');
+      return;
+    }
+    
+    String? email = await getEmailOfPoster(userId);
+    if (email != null) {
+      final Uri emailLaunchUri = Uri(
+        scheme: 'mailto',
+        path: email,
+        queryParameters: {
+          'subject': 'I saw your art on Artfolio...',
+          'body': 'I would like to bid'
+        },
+      );
+      launchUrl(emailLaunchUri);
+    }
+  }
+
+  Future<String?> getEmailOfPoster(String userId) async {
+    DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (userSnapshot.exists) {
+      Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+      return userData['email'];
+    }
+    return null;
+  }
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
@@ -94,8 +110,7 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  CollectionReference postsReference =
-      FirebaseFirestore.instance.collection('posts');
+  CollectionReference postsReference = FirebaseFirestore.instance.collection('posts');
   late Stream<QuerySnapshot> stream;
 
   @override
@@ -132,6 +147,7 @@ class HomePage extends StatelessWidget {
                 String? username = thisItem['username'];
                 String? caption = thisItem['caption'];
                 String? imageURL = thisItem['imageURL'];
+                String? userId = thisItem['userId']; // Ensure this is being retrieved correctly
 
                 if (username == null) {
                   return ListTile(
@@ -158,7 +174,7 @@ class HomePage extends StatelessWidget {
                           IconButton(
                            icon: Icon(Icons.mail_outline, size: 20,),
                            onPressed: () {
-                            _sendEmail(); //nearly works
+                            _sendEmail(userId); // Ensure userId is not null
                             }, ),
                           SizedBox(width: 4.0),
                           Text(
