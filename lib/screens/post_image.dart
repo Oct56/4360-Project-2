@@ -99,27 +99,27 @@ class _PostState extends State<Post> {
 
   showPost() {
     return Container(
-      color: Colors.grey[300],
+      color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(
             Icons.add_a_photo_sharp,
-            color: Colors.blue[900],
+            color: Color.fromARGB(255, 92, 197, 250),
             size: 100,
           ),
           Padding(
             padding: EdgeInsets.only(top: 10),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[900],
+                backgroundColor: Color.fromARGB(255, 92, 197, 250),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: Text(
                 "Showcase Your Latest Artwork!",
-                style: TextStyle(color: Colors.grey[300], fontSize: 20),
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
               onPressed: () => chooseCameraOrGallery(context),
             ),

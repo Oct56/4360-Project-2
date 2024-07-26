@@ -80,13 +80,16 @@ class _PostDisplayState extends State<PostDisplay> {
                       commentController.clear();
                       Navigator.pop(context);
                     },
-                    child: Text("Post")),
+                    child: Text(
+                      "Post",
+                      style: TextStyle(color: Colors.grey),
+                    )),
                 TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                       commentController.clear();
                     },
-                    child: Text("Cancel"))
+                    child: Text("Cancel", style: TextStyle(color: Colors.grey)))
               ],
             ));
   }
@@ -125,36 +128,39 @@ class _PostDisplayState extends State<PostDisplay> {
                 const SizedBox(
                   height: 5,
                 ),
-
               ],
             ),
           ],
         ),
-        
         SizedBox(
-          child: Column(children: [
+            child: Column(
+          children: [
             StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('posts').doc(widget.postId).collection('comments').snapshots(),
-          builder: (context, snapshot) {
-            if(!snapshot.hasData){
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-              return ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: snapshot.data!.docs.map((doc){
-                  final commentData = doc.data() as Map<String,dynamic>;
-                  return Comment(text: commentData['commentText'], user: commentData['commentedBy']);
-                }).toList(),
-              );
-            
-          },),
-          ],)
-          
-          )
-        
+              stream: FirebaseFirestore.instance
+                  .collection('posts')
+                  .doc(widget.postId)
+                  .collection('comments')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: snapshot.data!.docs.map((doc) {
+                    final commentData = doc.data() as Map<String, dynamic>;
+                    return Comment(
+                        text: commentData['commentText'],
+                        user: commentData['commentedBy']);
+                  }).toList(),
+                );
+              },
+            ),
+          ],
+        ))
       ],
     ));
   }

@@ -25,12 +25,12 @@ class _ProfilePageState extends State<ProfilePage> {
     fetchUserData();
   }
 
-  Future<void> fetchUserData() async { //retrieves user data from firebase with the userId assigned with each unique email
+  Future<void> fetchUserData() async {
     try {
       DocumentSnapshot snapshot =
           await _firestore.collection('users').doc(currentUser.uid).get();
       if (snapshot.exists) {
-        setState(() { //if anything else needs to be added to firebase through the user profile, copy the format below (a snapshot and a controller)
+        setState(() {
           username = snapshot.get('username');
           bio = snapshot.get('bio');
           usernameController.text = username ?? '';
@@ -67,15 +67,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: saveUserData,
-          ),
-        ],
+        title: Text('PROFILE'),
+        centerTitle: true, // Center the title
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,6 +107,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 hintText: 'Enter your bio',
               ),
               onChanged: (value) => bio = value,
+            ),
+            SizedBox(height: 20),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton(
+                onPressed: saveUserData,
+                child: Text('Save Changes'),
+              ),
             ),
           ],
         ),

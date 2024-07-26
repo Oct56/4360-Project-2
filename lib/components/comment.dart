@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
 
-class Comment extends StatelessWidget{
+class Comment extends StatelessWidget {
   final String text;
   final String user;
-  void Function()? onTap;
-  Comment({super.key, required this.text, required this.user});
+  final void Function()? onTap;
+
+  Comment({
+    super.key,
+    required this.text,
+    required this.user,
+    this.onTap,
+  });
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(4)
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(4),
       ),
+      padding: EdgeInsets.all(8.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // Aligns children to the start of the cross axis
         children: [
-          Text(user),
-          Text(text)
+          Text(
+            user,
+            style: TextStyle(
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 4.0), // Add some spacing between user and text
+          Text(text),
         ],
       ),
     );

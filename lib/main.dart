@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:group7_artfolio/screens/login.dart';
-import 'package:group7_artfolio/screens/signup.dart';
 import 'package:group7_artfolio/screens/profile.dart';
 import 'package:group7_artfolio/screens/post_image.dart';
+import 'package:group7_artfolio/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:group7_artfolio/components/post_display.dart';
 
@@ -20,9 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Firebase Auth Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: myTheme,
       home: AuthenticationWrapper(),
     );
   }
@@ -86,15 +84,6 @@ if (userEmail != null) {
     '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}').join('&');
 }
 
-  //Future<String?> getEmailOfPoster(String userId) async {
-  //DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-  //if (userSnapshot.exists) {
-  // Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-  // return userData['email'];
-  //}
-  //return null;
-  // }
-
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       //home
@@ -113,7 +102,6 @@ if (userEmail != null) {
           MaterialPageRoute(builder: (context) => Post()),
         );
         break;
-      // more cases can be added for more sections
     }
   }
 
@@ -125,7 +113,8 @@ if (userEmail != null) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: Text('HOME'),
+        centerTitle: true, // Center the title
         actions: [
           IconButton(
             icon: Icon(Icons.exit_to_app),
