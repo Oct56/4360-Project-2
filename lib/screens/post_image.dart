@@ -98,33 +98,42 @@ class _PostState extends State<Post> {
   }
 
   showPost() {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey[300],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: goHome,
+          iconSize: 30,
+          color: Color.fromARGB(255, 92, 197, 250),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
             Icons.add_a_photo_sharp,
             color: Color.fromARGB(255, 92, 197, 250),
             size: 100,
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 92, 197, 250),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                "Showcase Your Latest Artwork!",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              onPressed: () => chooseCameraOrGallery(context),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 92, 197, 250),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "Showcase Your Latest Artwork!",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                  onPressed: () => chooseCameraOrGallery(context)),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -212,13 +221,13 @@ class _PostState extends State<Post> {
     Reference referenceDirImages = referenceRoot.child('images');
     Reference referenceToUpload = referenceDirImages.child(fileName);
 
-    // Upload the file and wait until it's done
+    
     UploadTask uploadTask = referenceToUpload.putFile(File(file!.path));
 
-    // Wait for the upload task to complete
+    
     TaskSnapshot snapshot = await uploadTask.whenComplete(() {});
 
-    // Get the download URL
+    
     String imageURL = await snapshot.ref.getDownloadURL();
     DocumentSnapshot snapshot2 = await databaseRef2.doc(currentUser.uid).get();
     var value;
@@ -230,7 +239,7 @@ class _PostState extends State<Post> {
 
     final post = NewPost(
       id: databaseRef.doc().id,
-      userEmail: currentUser.email!, // Ensure userId is added here
+      userEmail: currentUser.email!, 
       username: value,
       caption: writeDescription.text,
       imageURL: imageURL,

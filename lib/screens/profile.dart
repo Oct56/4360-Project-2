@@ -68,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('PROFILE'),
-        centerTitle: true, // Center the title
+        centerTitle: true, 
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

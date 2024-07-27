@@ -55,16 +55,14 @@ class HomePage extends StatelessWidget {
     await FirebaseAuth.instance.signOut();
   }
 
-  int _selectedIndex = 0; // navigation bar icon page index
+  int _selectedIndex = 0; 
 
   Future<void> _sendEmail(String? userEmail) async {
     if (userEmail == null) {
-      // Handle the case where userId is null
       print('User ID is null, cannot send email.');
       return;
     }
 
-    //String? email = await getEmailOfPoster(userId);
 
 if (userEmail != null) {
       final Uri emailLaunchUri = Uri(
@@ -86,10 +84,10 @@ if (userEmail != null) {
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
-      //home
+      
       case 0:
         break;
-      //profile
+      
       case 2:
         Navigator.push(
           context,
@@ -114,7 +112,7 @@ if (userEmail != null) {
     return Scaffold(
       appBar: AppBar(
         title: Text('HOME'),
-        centerTitle: true, // Center the title
+        centerTitle: true, 
         actions: [
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -145,7 +143,7 @@ if (userEmail != null) {
                 String? caption = thisItem['caption'];
                 String? imageURL = thisItem['imageURL'];
                 String? userEmail = thisItem[
-                    'userEmail']; // Ensure this is being retrieved correctly
+                    'userEmail']; 
 
                 if (username == null) {
                   return ListTile(
@@ -176,7 +174,7 @@ if (userEmail != null) {
                             ),
                             onPressed: () {
                               _sendEmail(
-                                  userEmail); // Ensure userId is not null
+                                  userEmail); 
                             },
                           ),
                           SizedBox(width: 4.0),
@@ -226,7 +224,6 @@ if (userEmail != null) {
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
-          // add more sections to nav bar here
         ],
       ),
     );

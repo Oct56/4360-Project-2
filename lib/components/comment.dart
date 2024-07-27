@@ -21,7 +21,7 @@ class Comment extends StatelessWidget {
       ),
       padding: EdgeInsets.all(8.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // Aligns children to the start of the cross axis
+        crossAxisAlignment: CrossAxisAlignment.start, 
         children: [
           Text(
             user,
@@ -30,7 +30,7 @@ class Comment extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 4.0), // Add some spacing between user and text
+          SizedBox(height: 4.0), 
           Text(text),
         ],
       ),
